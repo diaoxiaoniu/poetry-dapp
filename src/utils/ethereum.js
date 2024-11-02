@@ -3,21 +3,20 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { POETRY_CONTRACT_ADDRESS, INFURA_ID } from '../config';
 import PoetryABI from '../artifacts/contracts/Poetry.sol/Poetry.json';
 
+const SEPOLIA_CHAIN_ID = '0xaa36a7';  // Sepolia 的 chainId
+
 export const getContract = async () => {
   try {
     console.log("开始连接到以太坊网络...");
     
-    // 检查是否是移动设备
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     let provider;
     if (isMobile) {
       if (window.ethereum) {
-        // 移动端 MetaMask
         provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
       } else {
-        // 如果没有 MetaMask，使用 WalletConnect
         provider = new WalletConnectProvider({
           infuraId: INFURA_ID,
           qrcode: true
@@ -26,11 +25,25 @@ export const getContract = async () => {
         provider = new ethers.providers.Web3Provider(provider);
       }
     } else if (window.ethereum) {
-      // 桌面端使用 MetaMask
       provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
     } else {
       throw new Error('请安装 MetaMask 或使用支持 WalletConnect 的钱包');
+    }
+    
+    // 检查网络
+    const network = await provider.getNetwork();
+    if (network.chainId.toString(16) !== SEPOLIA_CHAIN_ID.replace('0x', '')) {
+      try {
+        // 尝试切换到 Sepolia
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: SEPOLIA_CHAIN_ID }],
+        });
+      } catch (switchError) {
+        // 如果用户拒绝切换网络
+        throw new Error('请切换到 Sepolia 测试网以访问诗歌');
+      }
     }
     
     console.log("获取签名者...");
