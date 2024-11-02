@@ -1,0 +1,9 @@
+{
+  "short_name": "区块链诗歌",
+  "name": "区块链诗歌应用",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "icons": []
+} 

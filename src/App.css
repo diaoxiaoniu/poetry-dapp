@@ -1,0 +1,105 @@
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.poem-form {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.poem-form input,
+.poem-form textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.poem-form textarea {
+  min-height: 100px;
+}
+
+.poem-form button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.poem-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.poem-card {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.poem-card h3 {
+  margin-top: 0;
+}
+
+.poem-card small {
+  display: block;
+  color: #666;
+  margin-top: 10px;
+}
+
+.error {
+  color: red;
+  padding: 20px;
+  text-align: center;
+}
+
+.delete-button {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #cc0000;
+}
+
+.connect-wallet {
+  text-align: center;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.connect-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.connect-button:hover {
+  background-color: #45a049;
+}
+
+.connect-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+} 
