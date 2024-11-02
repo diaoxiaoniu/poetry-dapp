@@ -23,20 +23,29 @@ function App() {
     }
   };
 
+  const getWalletLink = () => {
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      return 'https://metamask.app.link/dapp/你的网站域名';
+    } else if (/Android/i.test(navigator.userAgent)) {
+      return 'https://metamask.app.link/dapp/你的网站域名';
+    }
+    return null;
+  };
+
   if (!contract) {
     return (
       <div className="App">
         <h1>民间诗人刁本涛的诗歌</h1>
         <div className="connect-wallet">
-          <p>请连接 MetaMask 钱包以访问完整功能</p>
-          <button 
-            onClick={connectWallet}
-            disabled={connecting}
-            className="connect-button"
-          >
-            {connecting ? '连接中...' : '连接 MetaMask'}
+          <p>请连接钱包以访问完整功能</p>
+          <button onClick={connectWallet}>
+            {connecting ? '连接中...' : '连接钱包'}
           </button>
-          {error && <p className="error">{error}</p>}
+          {getWalletLink() && (
+            <a href={getWalletLink()} className="wallet-link">
+              下载 MetaMask 移动端
+            </a>
+          )}
         </div>
       </div>
     );

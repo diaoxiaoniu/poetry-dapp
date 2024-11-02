@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import WalletConnectProvider from "@walletconnect/web3-provider";
 import { POETRY_CONTRACT_ADDRESS, INFURA_ID } from '../config';
 import PoetryABI from '../artifacts/contracts/Poetry.sol/Poetry.json';
 
@@ -6,29 +7,23 @@ export const getContract = async () => {
   try {
     console.log("开始连接到以太坊网络...");
     
-    if (typeof window.ethereum === 'undefined') {
-      throw new Error('请安装 MetaMask!');
-    }
-
-    // 先检查是否已连接
-    let accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    // 检查是否是移动设备
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
-    // 如果没有连接，请求连接
-    if (!accounts || accounts.length === 0) {
-      console.log("请求连接 MetaMask...");
-      accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts'
+    let provider;
+    if (isMobile) {
+      // 使用 WalletConnect
+      provider = new WalletConnectProvider({
+        infuraId: process.env.REACT_APP_INFURA_ID,
+        qrcode: true
       });
+      await provider.enable();
+    } else if (window.ethereum) {
+      // 桌面端使用 MetaMask
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+    } else {
+      throw new Error('请安装钱包');
     }
-
-    if (!accounts || accounts.length === 0) {
-      throw new Error('请在 MetaMask 中选择账户');
-    }
-
-    console.log("当前账户:", accounts[0]);
-    
-    console.log("创建 Web3Provider...");
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
     
     console.log("获取签名者...");
     const signer = provider.getSigner();
