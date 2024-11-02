@@ -12,17 +12,25 @@ export const getContract = async () => {
     
     let provider;
     if (isMobile) {
-      // 使用 WalletConnect
-      provider = new WalletConnectProvider({
-        infuraId: process.env.REACT_APP_INFURA_ID,
-        qrcode: true
-      });
-      await provider.enable();
+      if (window.ethereum) {
+        // 移动端 MetaMask
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+      } else {
+        // 如果没有 MetaMask，使用 WalletConnect
+        provider = new WalletConnectProvider({
+          infuraId: INFURA_ID,
+          qrcode: true
+        });
+        await provider.enable();
+        provider = new ethers.providers.Web3Provider(provider);
+      }
     } else if (window.ethereum) {
       // 桌面端使用 MetaMask
       provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
     } else {
-      throw new Error('请安装钱包');
+      throw new Error('请安装 MetaMask 或使用支持 WalletConnect 的钱包');
     }
     
     console.log("获取签名者...");
@@ -41,7 +49,7 @@ export const getContract = async () => {
   } catch (error) {
     console.error("连接错误:", error);
     if (error.code === 4001) {
-      throw new Error('请在 MetaMask 中允许连接');
+      throw new Error('请在钱包中允许连接');
     }
     throw error;
   }
