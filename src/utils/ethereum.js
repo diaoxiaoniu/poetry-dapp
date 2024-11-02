@@ -57,8 +57,21 @@ export const getContract = async () => {
       signer
     );
     
+    // 包装合约方法，添加中文错误处理
+    const wrappedContract = {
+      ...contract,
+      getActivePoems: async () => {
+        try {
+          return await contract.getActivePoems();
+        } catch (error) {
+          console.error("获取诗歌失败:", error);
+          throw new Error('获取诗歌失败，请确保已切换到 Sepolia 测试网');
+        }
+      }
+    };
+    
     console.log("合约连接成功!");
-    return contract;
+    return wrappedContract;
   } catch (error) {
     console.error("连接错误:", error);
     if (error.code === 4001) {
