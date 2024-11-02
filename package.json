@@ -5,7 +5,7 @@
   "main": "hardhat.config.js",
   "scripts": {
     "start": "node scripts/copy-artifacts.js && react-scripts start",
-    "build": "node scripts/copy-artifacts.js && set \"GENERATE_SOURCEMAP=false\" && react-scripts build && node scripts/post-build.js && node scripts/inline-css.js",
+    "build": "npx hardhat compile && node scripts/copy-artifacts.js && react-scripts build",
     "deploy": "hardhat run scripts/deploy.js --network sepolia",
     "copy-artifacts": "node scripts/copy-artifacts.js"
   },
