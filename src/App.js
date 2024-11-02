@@ -24,7 +24,7 @@ function App() {
   };
 
   const getWalletLink = () => {
-    const dappUrl = 'poetry-dapp-cfwp7az9-diaoxiaoniu.4everland.app';
+    const dappUrl = 'daisydiao.eth.limo';
     
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       return `https://metamask.app.link/dapp/${dappUrl}`;
