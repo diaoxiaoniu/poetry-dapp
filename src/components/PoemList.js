@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
+function formatPoem(content) {
+  // 先按句号分割，然后处理作者名
+  return content
+    .split('。')
+    .map(line => line.trim())
+    .filter(line => line) // 移除空行
+    .join('。\n') // 每句后添加换行
+    .replace(/刁本涛/, '\n刁本涛'); // 作者名前添加换行
+}
+
 function PoemList({ contract }) {
   const [poems, setPoems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -142,7 +152,7 @@ function PoemList({ contract }) {
         poems.map((poem, index) => (
           <div key={index} className="poem-card">
             <h3>{poem.title}</h3>
-            <p>{poem.content}</p>
+            <pre className="poem-content">{formatPoem(poem.content)}</pre>
             <small>发布时间: {poem.timestamp}</small>
             {isOwner && (
               <button 

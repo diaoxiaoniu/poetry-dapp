@@ -126,4 +126,12 @@
 
 .wallet-link:hover {
   background-color: #45a049;
+}
+
+.poem-content {
+  white-space: pre-wrap;
+  font-family: inherit;
+  margin: 10px 0;
+  line-height: 1.6;
+  font-size: 16px;
 } 
