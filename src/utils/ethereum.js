@@ -38,7 +38,13 @@ export const getContract = async () => {
         });
       } catch (switchError) {
         // 如果用户拒绝切换网络
-        const message = `请切换到 Sepolia 测试网以访问诗歌\nPlease switch to Sepolia testnet to access poems`;
+        const message = 
+          '请切换到 Sepolia 测试网以访问诗歌\n' +
+          'Please switch to Sepolia testnet to access poems\n\n' +
+          '当前网络: ' + network.name + '\n' +
+          'Current Network: ' + network.name + '\n\n' +
+          '目标网络: Sepolia\n' +
+          'Target Network: Sepolia';
         throw new Error(message);
       }
     }

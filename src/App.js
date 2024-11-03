@@ -25,22 +25,34 @@ function App() {
   };
 
   const getWalletLink = () => {
+    const currentUrl = window.location.href;
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       return {
         download: 'https://apps.apple.com/us/app/metamask/id1438144202',
-        deeplink: `https://metamask.app.link/dapp/${window.location.host}`
+        deeplink: `metamask://dapp/${currentUrl}`
       };
     } else if (/Android/i.test(navigator.userAgent)) {
       return {
         download: 'https://play.google.com/store/apps/details?id=io.metamask',
-        deeplink: `https://metamask.app.link/dapp/${window.location.host}`
+        deeplink: `https://metamask.app.link/dapp/${currentUrl}`
       };
     }
     return null;
   };
 
-  if (!contract) {
+  const handleMobileWallet = () => {
     const walletLinks = getWalletLink();
+    if (walletLinks) {
+      // 先尝试打开 MetaMask
+      window.location.href = walletLinks.deeplink;
+      // 设置一个定时器，如果无法打开 MetaMask，则跳转到下载页面
+      setTimeout(() => {
+        window.location.href = walletLinks.download;
+      }, 1500);
+    }
+  };
+
+  if (!contract) {
     return (
       <div className="App">
         <h1>民间诗人刁本涛的诗歌</h1>
@@ -49,18 +61,13 @@ function App() {
           {isMobile ? (
             <>
               <p>请使用以下方式访问：</p>
-              {walletLinks && (
-                <>
-                  <a href={walletLinks.deeplink} className="wallet-link">
-                    在 MetaMask 中打开
-                  </a>
-                  <p>或</p>
-                  <a href={walletLinks.download} className="wallet-link" target="_blank" rel="noopener noreferrer">
-                    下载 MetaMask
-                  </a>
-                  <p>然后在 MetaMask 浏览器中访问此网站</p>
-                </>
-              )}
+              <button onClick={handleMobileWallet} className="wallet-link">
+                打开/下载 MetaMask
+              </button>
+              <p className="wallet-tip">
+                如果已安装 MetaMask，将自动打开；<br />
+                如果未安装，将跳转到应用商店
+              </p>
             </>
           ) : (
             <button onClick={connectWallet} disabled={connecting}>
