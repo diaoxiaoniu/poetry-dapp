@@ -17,18 +17,14 @@ export const getContract = async () => {
         provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
       } else {
-        provider = new WalletConnectProvider({
-          infuraId: INFURA_ID,
-          qrcode: true
-        });
-        await provider.enable();
-        provider = new ethers.providers.Web3Provider(provider);
+        // 如果是移动设备且没有检测到钱包
+        throw new Error('请在钱包的 DApp 浏览器中打开此网站，或安装 MetaMask 移动版');
       }
     } else if (window.ethereum) {
       provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
     } else {
-      throw new Error('请安装 MetaMask 或使用支持 WalletConnect 的钱包');
+      throw new Error('未检测到钱包，请安装 MetaMask');
     }
     
     // 检查网络
@@ -42,7 +38,8 @@ export const getContract = async () => {
         });
       } catch (switchError) {
         // 如果用户拒绝切换网络
-        throw new Error('请切换到 Sepolia 测试网以访问诗歌');
+        const message = `请切换到 Sepolia 测试网以访问诗歌\nPlease switch to Sepolia testnet to access poems`;
+        throw new Error(message);
       }
     }
     
@@ -57,7 +54,7 @@ export const getContract = async () => {
       signer
     );
     
-    // 包装合约方法，添加中文错误处理
+    // 包装合约方法，添加双语错误处理
     const wrappedContract = {
       ...contract,
       getActivePoems: async () => {
@@ -65,7 +62,7 @@ export const getContract = async () => {
           return await contract.getActivePoems();
         } catch (error) {
           console.error("获取诗歌失败:", error);
-          throw new Error('获取诗歌失败，请确保已切换到 Sepolia 测试网');
+          throw new Error('获取诗歌失败，请确保已切换到 Sepolia 测试网\nFailed to get poems, please make sure you are on Sepolia testnet');
         }
       }
     };
@@ -75,7 +72,7 @@ export const getContract = async () => {
   } catch (error) {
     console.error("连接错误:", error);
     if (error.code === 4001) {
-      throw new Error('请在钱包中允许连接');
+      throw new Error('请在钱包中允许连接\nPlease allow connection in wallet');
     }
     throw error;
   }

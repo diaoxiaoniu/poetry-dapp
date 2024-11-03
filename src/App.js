@@ -25,17 +25,22 @@ function App() {
   };
 
   const getWalletLink = () => {
-    const dappUrl = 'daisydiao.eth.limo';
-    
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      return 'https://apps.apple.com/us/app/metamask/id1438144202';
+      return {
+        download: 'https://apps.apple.com/us/app/metamask/id1438144202',
+        deeplink: `https://metamask.app.link/dapp/${window.location.host}`
+      };
     } else if (/Android/i.test(navigator.userAgent)) {
-      return 'https://play.google.com/store/apps/details?id=io.metamask';
+      return {
+        download: 'https://play.google.com/store/apps/details?id=io.metamask',
+        deeplink: `https://metamask.app.link/dapp/${window.location.host}`
+      };
     }
     return null;
   };
 
   if (!contract) {
+    const walletLinks = getWalletLink();
     return (
       <div className="App">
         <h1>民间诗人刁本涛的诗歌</h1>
@@ -43,18 +48,31 @@ function App() {
           <p>请连接钱包以访问完整功能</p>
           {isMobile ? (
             <>
-              <p>请先安装并打开 MetaMask 移动端钱包</p>
-              <a href={getWalletLink()} className="wallet-link" target="_blank" rel="noopener noreferrer">
-                下载 MetaMask
-              </a>
-              <p>安装后请刷新页面</p>
+              <p>请使用以下方式访问：</p>
+              {walletLinks && (
+                <>
+                  <a href={walletLinks.deeplink} className="wallet-link">
+                    在 MetaMask 中打开
+                  </a>
+                  <p>或</p>
+                  <a href={walletLinks.download} className="wallet-link" target="_blank" rel="noopener noreferrer">
+                    下载 MetaMask
+                  </a>
+                  <p>然后在 MetaMask 浏览器中访问此网站</p>
+                </>
+              )}
             </>
           ) : (
             <button onClick={connectWallet} disabled={connecting}>
               {connecting ? '连接中...' : '连接钱包'}
             </button>
           )}
-          {error && <p className="error">{error}</p>}
+          {error && <p className="error">{error.split('\n').map((line, i) => (
+            <span key={i}>
+              {line}
+              <br />
+            </span>
+          ))}</p>}
         </div>
       </div>
     );
